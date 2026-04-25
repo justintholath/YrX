@@ -3866,14 +3866,11 @@ And in the One, Holy, Catholic, and Apostolic Church: And we acknowledge one bap
 <!-- ====================================================================================================== -->
 <!-- ====================================================================================================== -->
 
-<div id="html-toc">
-</div>
-
-<div id="html-page">
+<div id="html-display">
 </div>
 
 <script>
-var display_chapter = 1;
+var display_chapter = 0;
 
 function formatStr(inString) {
     var outString = ''
@@ -3980,8 +3977,8 @@ function markdown_2_toc(markdown) {
 function markdown_2_page(markdown) {
     const lines = (markdown + "\n").split('\n');
     let html = '';
-    let page_build = '';
-
+    let page_build = '<span onclick="GoToChapter(0)" style="cursor: pointer; color: blue; text-decoration: underline; font-size: 18px;">[Table of Contents]</span>';
+    page_build += '<br><br>'
     let h1_count = 0;
 
     var col_lines = "";
@@ -4064,58 +4061,50 @@ function markdown_2_page(markdown) {
         };
     };
 
-    page_build += '<span onclick="window.scrollTo(0, 0)" style="cursor: pointer; color: blue; text-decoration: underline; font-size: 14px;">[Back to Top]</span>';
+    page_build += '<span onclick="GoToChapter(0)" style="cursor: pointer; color: blue; text-decoration: underline; font-size: 18px;">[Table of Contents]</span>';
 
-    html += '<div class="container">' + page_build + '</div>';
+    html += '<div class="container">' + page_build + '<br><br><br></div>';
 
     return html;
 };
 
 const markdownInput = document.getElementById('markdown-input');
-const html_toc = document.getElementById('html-toc');
-const html_page = document.getElementById('html-page');
+const html_display = document.getElementById('html-display');
 
 /**
     * Main function to trigger conversion on input.
     */
 function convertMarkdown() {
     const markdownText = markdownInput.value;
-    try {
-        var html_ret = markdown_2_toc(markdownText);
-        html_toc.innerHTML = html_ret;
-    } catch (error) {
-        html_toc.innerHTML = `<p>Error in Native Conversion:</p><pre>${error.message}</pre>`;
-        console.error("Native Markdown conversion failed:", error);
+    if  (display_chapter == 0) {
+        try {
+            var html_ret = markdown_2_toc(markdownText);
+            html_display.innerHTML = html_ret;
+        } catch (error) {
+            html_display.innerHTML = `<p>Error in Native Conversion:</p><pre>${error.message}</pre>`;
+            console.error("Native Markdown conversion failed:", error);
+        };
+    } else {
+        try {
+            var html_ret = markdown_2_page(markdownText);
+            html_display.innerHTML = html_ret;
+        } catch (error) {
+            html_display.innerHTML = `<p>Error in Native Conversion:</p><pre>${error.message}</pre>`;
+            console.error("Native Markdown conversion failed:", error);
+        };
     };
-    try {
-        var html_ret = markdown_2_page(markdownText);
-        html_page.innerHTML = html_ret;
-    } catch (error) {
-        html_page.innerHTML = `<p>Error in Native Conversion:</p><pre>${error.message}</pre>`;
-        console.error("Native Markdown conversion failed:", error);
-    };
-}
+};
 
 function GoToChapter(inVal) {
     display_chapter = inVal;
     convertMarkdown()
-    const verseElement = document.getElementById("html-page");
-
-    if (verseElement) {
-        const elementPosition = verseElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset;
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth" // Optional: makes it slide nicely
-        });
-    }
+    window.scrollTo(0, 0);
 };
 
 
 // Run the conversion once on load to populate the initial example text
 window.onload = convertMarkdown;
-document.getElementById("html-toc").style.display = 'block';
-document.getElementById("html-page").style.display = 'block';
+document.getElementById("html-display").style.display = 'block';
 markdownInput.style.display = 'none'
 
 </script>
