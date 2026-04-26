@@ -4006,7 +4006,7 @@ function markdown_2_page(markdown) {
         if (h1_count == display_chapter) {
             if (line.includes(" ||")) {
                 if (table_found === 0) {
-                    page_build = '<table style="border: none; border-collapse: collapse;">'
+                    page_build += '<table style="border: none; border-collapse: collapse;">'
                     table_found = 1
                 }
                 else {
